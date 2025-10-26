@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quiz - Grade 4</title>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+        :root {
+            --primary-color: #FFA500; /* Bright Orange */
+            --secondary-color: #FFD700; /* Bright Yellow/Gold */
+            --correct-color: #28a745; /* Green */
+            --incorrect-color: #dc3545; /* Red */
+            --dark-shadow: #8c5a00; /* Dark Orange/Brown for shadow */
+            --text-color: #333; /* Dark text for contrast */
+            --bg-color: #1a1a2e; /* Dark Blue/Purple background */
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column; /* To stack main content and footer */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        
+        main.content-wrapper {
+            flex-grow: 1; /* Allows main content to grow */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .quiz-container {
+            background: linear-gradient(145deg, var(--secondary-color), var(--primary-color));
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.3);
+            border: 3px solid var(--dark-shadow);
+            width: 100%;
+            max-width: 800px; /* Default max-width (Mobile-first) */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box; /* Ensures padding doesn't break layout */
+        }
+        
+        /* --- Start Screen Styles --- */
+        #start-container h2 {
+            color: var(--text-color);
+            font-size: 1.5rem; /* Mobile-first: smaller size */
+            margin-bottom: 10px; /* Reduced spacing */
+            font-weight: normal; /* Lighter font */
+        }
+
+        #user-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 1rem;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid var(--dark-shadow);
+            font-size: 1rem;
+            box-sizing: border-box; /* Consistent sizing */
+        }
+
+        #start-btn {
+            padding: 12px 24px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 12px;
+            background: var(--correct-color);
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        #start-btn:hover {
+            background: #1f7a32;
+        }
+
+        #start-image {
+            width: 80%; /* Mobile-first: larger image */
+            height: auto;
+            object-fit: contain;
+            margin-bottom: 10px; /* Reduced from 20px */
+            border-radius: 15px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- Quiz Container Styles --- */
+        #question-image {
+            width: 80%; /* Mobile-first: larger image */
+            height: auto;
+            object-fit: contain;
+            margin-bottom: 10px; /* Reduced from 20px */
+            border-radius: 15px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- Question Counter Style --- */
+        #question-counter {
+            font-size: 1.1rem; /* Mobile-first: adjusted */
+            color: var(--text-color);
+            font-weight: bold;
+            margin-bottom: 10px; /* Balanced spacing */
+            margin-top: 10px; /* Balanced spacing */
+        }
+
+        #question-text {
+            font-size: 1.4rem; /* Mobile-first: smaller size (WAS 1.5rem) */
+            margin-bottom: 12px; /* Reduced from 25px */
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        /* --- Bar Model CSS --- */
+        .bar-model-container {
+            margin: 15px auto;
+            width: 200px;
+            border: 2px solid var(--text-color);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+            color: var(--text-color);
+        }
+        .bar-model-total {
+            padding: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-bottom: 2px solid var(--text-color);
+        }
+        .bar-model-parts {
+            display: flex;
+        }
+        .bar-model-part {
+            padding: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            width: 50%;
+            box-sizing: border-box;
+        }
+        .bar-model-part:first-child {
+            border-right: 2px solid var(--text-color);
+        }
+        /* --- End Bar Model CSS --- */
+
+
+        /* Final score display */
+        .score-display {
+            font-size: 1.8rem; /* Mobile-first: smaller size */
+            color: var(--text-color);
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Mobile-first: single column */
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: #fff;
+            color: var(--text-color);
+            border: 2px solid var(--dark-shadow);
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 1.1rem; /* Mobile-first: smaller size */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            font-weight: bold;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-5px) scale(1.03);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+
+        .correct {
+            background-color: var(--correct-color) !important;
+            color: white !important;
+            border-color: darkgreen !important;
+            transform: scale(1.05);
+        }
+
+        .incorrect {
+            background-color: var(--incorrect-color) !important;
+            color: white !important;
+            border-color: darkred !important;
+        }
+
+        #explanation-box {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+            color: var(--text-color);
+            text-align: left;
+            border: 2px solid var(--dark-shadow);
+            display: none;
+        }
+
+        #next-btn {
+            display: none;
+            margin-top: 20px;
+            padding: 12px 24px;
+            font-size: 1.1rem; /* Mobile-first: adjusted */
+            border: none;
+            border-radius: 12px;
+            background: var(--correct-color);
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #next-btn:hover {
+            background: #1f7a32;
+        }
+
+        #try-again-btn {
+            display: none; /* Hidden by default */
+            margin-top: 10px; /* Space from the score */
+            padding: 12px 24px;
+            font-size: 1.1rem; /* Mobile-first: adjusted */
+            border: none;
+            border-radius: 12px;
+            background: var(--primary-color);
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        
+        #try-again-btn:hover {
+             background: var(--dark-shadow);
+        }
+
+        #site-footer {
+            width: 100%;
+            text-align: center;
+            padding-top: 20px; /* Space from content */
+            color: #fff; /* White text as requested */
+            font-size: 0.8rem; /* Mobile-first: adjusted */
+        }
+
+        /* --- Desktop & Tablet Overrides (Media Query) --- */
+        @media (min-width: 640px) {
+            /* This applies the 25% size reduction */
+            .quiz-container {
+                max-width: 600px; /* 800px * 0.75 = 600px */
+            }
+
+            #start-container h2 {
+                font-size: 1.8rem; /* Restore larger size */
+            }
+
+            #start-image {
+                width: 50%; /* Restore original width */
+            }
+
+            #question-image {
+                width: 50%; /* Restore original width */
+            }
+
+            #question-counter {
+                font-size: 1.2rem; /* Restore original size */
+            }
+
+            #question-text {
+                font-size: 1.6rem; /* Restore larger size (WAS 1.8rem) */
+            }
+
+            .score-display {
+                font-size: 2.2rem; /* Restore larger size */
+            }
+
+            .options-grid {
+                grid-template-columns: repeat(2, 1fr); /* Back to 2 columns */
+            }
+
+            .option-btn {
+                font-size: 1.2rem; /* Restore larger size */
+            }
+
+            #next-btn, #try-again-btn, #start-btn {
+                font-size: 1.2rem; /* Restore larger size */
+            }
+
+            #site-footer {
+                font-size: 0.9rem; /* Restore original size */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="content-wrapper">
+
+        <!-- Start Screen -->
+        <div id="start-container" class="quiz-container">
+            <img id="start-image" src="https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png" alt="Math illustration">
+            <h2>Welcome to Math Quiz for Grade 4, the 1st term</h2>
+            
+            <form id="user-form">
+                <div class="form-group">
+                    <label for="student-name">Name:</label>
+                    <input type="text" id="student-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="student-email">Email:</label>
+                    <input type="email" id="student-email" required>
+                </div>
+                <!-- Button moved INSIDE the form and set to type="submit" -->
+                <button type="submit" id="start-btn">Start Quiz 🚀</button>
+            </form>
+            
+        </div>
+
+        <!-- Quiz Screen (Initially Hidden) -->
+        <div id="quiz-container" class="quiz-container" style="display: none;">
+            <!-- صورة ثابتة -->
+            <img id="question-image" src="https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png" alt="Math illustration">
+            
+            <p id="question-counter"></p>
+            <p id="question-text"></p>
+
+            <div class="options-grid" id="options-container"></div>
+
+            <div id="explanation-box">
+                <p id="explanation-text"></p>
+            </div>
+
+            <button id="next-btn">Next ➡️</button>
+            <button id="try-again-btn">Try Again 🔄</button>
+        </div>
+
+    </main>
+
+    <footer id="site-footer">
+        Copyright © Math Egypt Mr. Ayman Hassan
+    </footer>
+
+
+    <script>
+        const questions = [
+            // Question 1 (Existing)
+            {
+                question: "What is the value of the digit 5 in the number \\(152{,}890\\)?",
+                options: ["\\(500\\)", "\\(5{,}000\\)", "\\(50{,}000\\)", "\\(500{,}000\\)"],
+                answer: "\\(50{,}000\\)",
+                explanation: "The digit 5 is in the ten thousands place, so its value is \\(5 \\times 10{,}000 = 50{,}000\\).",
+                image: "https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png"
+            },
+
+            // Question 2 (Existing)
+            {
+                question: "What is \\(4{,}288\\) rounded to the nearest hundred?",
+                options: ["\\(4{,}000\\)", "\\(4{,}200\\)", "\\(4{,}300\\)", "\\(4{,}290\\)"],
+                answer: "\\(4{,}300\\)",
+                explanation: "Look at the tens digit (8). Since it's 5 or greater, we round up the hundreds digit. So, \\(4{,}288\\) rounds up to \\(4{,}300\\).",
+                image: "https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png"
+            },
+            
+            // --- NEW QUESTIONS ADDED FROM IMAGE ---
+
+            // Question 3 (New from Image Q1)
+            {
+                question: "The digit that lies in ten thousand in the number \\(835{,}761\\) is ......",
+                options: ["\\(8\\)", "\\(5\\)", "\\(6\\)", "\\(3\\)"],
+                answer: "\\(3\\)",
+                explanation: "In the number 835,761, the digit 8 is in the hundred thousands place, the digit 3 is in the ten thousands place, and the digit 5 is in the thousands place. The correct digit is 3.",
+                image: "https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png"
+            },
+
+            // Question 4 (New from Image Q2)
+            {
+                question: "\\(7{,}000 + 500 + 20 + 6 = \\) ......",
+                options: ["\\(7{,}256\\)", "\\(70{,}526\\)", "\\(5{,}762\\)", "\\(7{,}526\\)"],
+                answer: "\\(7{,}526\\)",
+                explanation: "Adding the values together in expanded form: 7000 + 500 + 20 + 6 gives the total 7,526.",
+                image: "https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png"
+            },
+
+            // Question 5 (New from Image Q3)
+            {
+                question: "\\(625{,}132 < \\) ......",
+                options: ["\\(615{,}132\\)", "\\(625{,}432\\)", "\\(605{,}999\\)", "\\(625{,}104\\)"],
+                answer: "\\(625{,}432\\)",
+                explanation: "We are looking for a number greater than 625,132. Comparing the options, only 625,432 is greater than 625,132.",
+                image: "https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png"
+            },
+
+            // Question 6 (New from Image Q4)
+            {
+                question: "\\(85{,}792 \\approx \\) ...... (to the nearest thousand)",
+                options: ["\\(86{,}000\\)", "\\(86{,}700\\)", "\\(85{,}800\\)", "\\(85{,}000\\)"],
+                answer: "\\(86{,}000\\)",
+                explanation: "To round 85,792 to the nearest thousand, we look at the hundreds digit, which is 7. Since 7 is 5 or greater, we round up the thousands digit (5) to 6. The result is 86,000.",
+                image: "https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png"
+            },
+
+            // Question 7 (New from Image with custom Bar Model)
+            {
+                question: "From the following bar model, the value of \\(a\\) = ......" +
+                          "<div class='bar-model-container'>" +
+                            "<div class='bar-model-total'>12,000</div>" +
+                            "<div class='bar-model-parts'>" +
+                                "<div class='bar-model-part'>\\(a\\)</div>" +
+                                "<div class='bar-model-part'>4,600</div>" +
+                            "</div>" +
+                          "</div>",
+                options: ["\\(16{,}600\\)", "\\(8{,}400\\)", "\\(7{,}400\\)", "\\(8{,}000\\)"],
+                answer: "\\(7{,}400\\)",
+                explanation: "The bar model shows a total of 12,000, which is made up of two parts: 'a' and 4,600. So, \\(a + 4{,}600 = 12{,}000\\). To find 'a', we subtract: \\(a = 12{,}000 - 4{,}600 = 7{,}400\\).",
+                image: "https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png"
+            },
+
+            // Question 8 (New from Image Q6)
+            {
+                question: "The best unit for measuring the length of the Nile river is ......",
+                options: ["millimeter", "centimeter", "Meter", "Kilometer"],
+                answer: "Kilometer",
+                explanation: "The Nile River is very long, so the largest standard unit of length, Kilometer, is used to measure it.",
+                image: "https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png"
+            },
+
+            // Question 9 (New from Image Q7)
+            {
+                question: "9 kg = ...... gm",
+                options: ["\\(9{,}000\\)", "\\(90{,}000\\)", "\\(900{,}000\\)", "\\(9{,}000{,}000\\)"],
+                answer: "\\(9{,}000\\)",
+                explanation: "Since 1 kilogram (kg) = 1,000 grams (gm), then 9 kg = \\(9 \\times 1{,}000 = 9{,}000\\) gm.",
+                image: "https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png"
+            },
+
+            // Question 10 (New from Image Q8)
+            {
+                question: "The standard form of the number: five milliards, thirty-two thousand and fifteen = ......",
+                options: ["\\(53{,}215\\)", "\\(5{,}320{,}015\\)", "\\(5{,}000{,}032{,}015\\)", "\\(5{,}032{,}015\\)"],
+                answer: "\\(5{,}000{,}032{,}015\\)",
+                explanation: "Five milliards (billions) is 5,000,000,000. Thirty-two thousand is 32,000. Fifteen is 15. Adding them: 5,000,000,000 + 32,000 + 15 = 5,000,032,015.",
+                image: "https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png"
+            },
+
+            // Question 11 (New from Image Q9)
+            {
+                question: "420 cm = ......",
+                options: ["\\(42\\ \\text{m}\\)", "\\(20\\ \\text{m, } 4\\ \\text{cm}\\)", "\\(4\\ \\text{m, } 20\\ \\text{cm}\\)", "\\(42\\ \\text{cm}\\)"],
+                answer: "\\(4\\ \\text{m, } 20\\ \\text{cm}\\)",
+                explanation: "There are 100 cm in 1 m. 420 cm is 400 cm + 20 cm. This equals 4 meters and 20 centimeters.",
+                image: "https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png"
+            },
+
+            // Question 12 (New from Image Q10)
+            {
+                question: "7 meters, 20 cm = ......",
+                options: ["\\(720\\ \\text{m}\\)", "\\(720\\ \\text{cm}\\)", "\\(207\\ \\text{cm}\\)", "\\(7{,}020\\ \\text{cm}\\)"],
+                answer: "\\(720\\ \\text{cm}\\)",
+                explanation: "1 meter = 100 cm. So, 7 meters = 700 cm. Adding the 20 cm gives 700 + 20 = 720 cm.",
+                image: "https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png"
+            },
+
+            // Question 13 (New from Image Q11)
+            {
+                question: "7 liters + 620 milliliters = ...... milliliters",
+                options: ["\\(76{,}200\\)", "\\(7{,}620\\)", "\\(7{,}062\\)", "\\(7{,}020\\)"],
+                answer: "\\(7{,}620\\)",
+                explanation: "1 liter = 1,000 milliliters. So, 7 liters = 7,000 ml. Adding the 620 ml gives 7,000 + 620 = 7,620 ml.",
+                image: "https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png"
+            },
+
+            // Question 14 (New from Image Q12)
+            {
+                question: "6 hours, 15 minutes = ...... minutes",
+                options: ["\\(75\\)", "\\(360\\)", "\\(370\\)", "\\(375\\)"],
+                answer: "\\(375\\)",
+                explanation: "1 hour = 60 minutes. So, 6 hours = \\(6 \\times 60 = 360\\) minutes. Adding the 15 minutes gives 360 + 15 = 375 minutes.",
+                image: "https://res.cloudinary.com/dic0afbko/image/upload/v1759575970/Math-of-Grade-4-10-4-2025_jzi1ij.png"
+            }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let studentName = '';
+
+        // DOM Elements
+        const startContainer = document.getElementById('start-container');
+        const quizContainer = document.getElementById('quiz-container');
+        const userForm = document.getElementById('user-form');
+        // const startBtn = document.getElementById('start-btn'); // No longer needed for event listener
+
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainerEl = document.getElementById('options-container');
+        const explanationBoxEl = document.getElementById('explanation-box');
+        const explanationTextEl = document.getElementById('explanation-text');
+        const questionImageEl = document.getElementById('question-image');
+        const questionCounterEl = document.getElementById('question-counter');
+        const nextBtn = document.getElementById('next-btn');
+        const tryAgainBtn = document.getElementById('try-again-btn');
+
+        // Event Listeners
+        userForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent form from actually submitting
+            startQuiz();
+        });
+
+        // Removed the redundant 'click' listener for startBtn
+
+        // FIX: Removed the 'ax' typo from the arrow function
+        nextBtn.addEventListener('click', () => {
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                displayQuestion(currentIndex);
+            } else {
+                showFinalScore();
+            }
+        });
+        
+        tryAgainBtn.addEventListener('click', () => {
+            // Reset quiz
+            currentIndex = 0;
+            score = 0;
+            // No need to reset studentName, keep it for the session
+            
+            // Hide results
+            tryAgainBtn.style.display = 'none';
+            
+            // Show quiz container (it might be hidden if we came from start screen)
+            startContainer.style.display = 'none';
+            quizContainer.style.display = 'flex';
+
+            // Display the first question
+            displayQuestion(currentIndex);
+        });
+
+        // Functions
+        function startQuiz() {
+            studentName = document.getElementById('student-name').value;
+            // Email is collected but not used yet, validation is handled by 'required'
+            
+            // Validation is now handled by the form's 'submit' event and 'required' attributes
+            
+            startContainer.style.display = 'none';
+            quizContainer.style.display = 'flex'; // Show quiz
+            displayQuestion(currentIndex);
+        }
+
+        function displayQuestion(index) {
+            const q = questions[index];
+            
+            questionCounterEl.innerHTML = `Question ${index + 1} / ${questions.length}`;
+            questionTextEl.innerHTML = q.question;
+            questionImageEl.src = q.image;
+            optionsContainerEl.innerHTML = ''; // Clear old options
+            optionsContainerEl.style.display = 'grid'; // Ensure it's visible
+
+            q.options.forEach(option => {
+                const button = document.createElement('button');
+                button.innerHTML = option;
+                button.dataset.value = option;
+                button.classList.add('option-btn');
+                button.addEventListener('click', () => selectAnswer(button, q.answer, q.explanation));
+                optionsContainerEl.appendChild(button);
+            });
+
+            explanationBoxEl.style.display = 'none';
+            nextBtn.style.display = 'none';
+            tryAgainBtn.style.display = 'none'; // Hide try again button during question
+            if (window.MathJax && MathJax.typeset) MathJax.typeset();
+        }
+
+        function selectAnswer(clickedButton, correctAnswer, explanation) {
+            const selectedOption = clickedButton.dataset.value;
+            const allButtons = document.querySelectorAll('.option-btn');
+            allButtons.forEach(btn => btn.disabled = true); // Disable all options
+
+            if (selectedOption === correctAnswer) {
+                clickedButton.classList.add('correct');
+                score++; // Increment score
+            } else {
+                clickedButton.classList.add('incorrect');
+                // Highlight the correct answer
+                allButtons.forEach(btn => {
+                    if (btn.dataset.value === correctAnswer) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+
+            explanationTextEl.innerHTML = explanation;
+            explanationBoxEl.style.display = 'block';
+            nextBtn.style.display = 'inline-block'; // Show "Next" button
+            if (window.MathJax && MathJax.typeset) MathJax.typeset();
+        }
+
+        function showFinalScore() {
+            nextBtn.style.display = 'none';
+            questionCounterEl.innerHTML = ''; // Clear counter
+            questionTextEl.innerHTML = `🎉 Congratulations, ${studentName}! 🎉`;
+            optionsContainerEl.style.display = 'none'; // Hide options grid
+            explanationBoxEl.style.display = 'none'; // Hide explanation
+            
+            // Create and display the score
+            const scoreEl = document.createElement('p');
+            scoreEl.classList.add('score-display');
+            scoreEl.innerHTML = `Your Score: ${score} / ${questions.length}`;
+            optionsContainerEl.innerHTML = ''; // Clear options just in case
+            optionsContainerEl.appendChild(scoreEl);
+            optionsContainerEl.style.display = 'block'; // Make sure container is visible for score
+
+            tryAgainBtn.style.display = 'inline-block'; // Show "Try Again"
+        }
+
+    </script>
+</body>
+</html>
+
+
+
+
+
